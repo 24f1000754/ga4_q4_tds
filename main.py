@@ -9,7 +9,7 @@ from pydantic import BaseModel
 app = FastAPI()
 
 ISSUER = "https://idp.exam.local"
-AUDIENCE = "tds-etugcojy.apps.exam.local"
+AUDIENCE = "tds-etugcoiy.apps.exam.local"
 
 PUBLIC_KEY = os.environ["IDP_PUBLIC_KEY"].replace("\\n", "\n")
 
