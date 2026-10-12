@@ -11,8 +11,7 @@ app = FastAPI()
 ISSUER = "https://idp.exam.local"
 AUDIENCE = "tds-etugcojy.apps.exam.local"
 
-# Paste the complete assigned PEM public key here.
-PUBLIC_KEY = os.environ.get("IDP_PUBLIC_KEY", """PASTE_YOUR_COMPLETE_PUBLIC_KEY_HERE""")
+PUBLIC_KEY = os.environ["IDP_PUBLIC_KEY"].replace("\\n", "\n")
 
 
 class TokenRequest(BaseModel):
@@ -28,9 +27,7 @@ def verify_token(body: TokenRequest):
             algorithms=["RS256"],
             issuer=ISSUER,
             audience=AUDIENCE,
-            options={
-                "require": ["exp", "iss", "aud", "sub"]
-            },
+            options={"require": ["exp", "iss", "aud", "sub"]},
         )
 
         return {
@@ -40,7 +37,8 @@ def verify_token(body: TokenRequest):
             "aud": claims.get("aud", ""),
         }
 
-    except jwt.PyJWTError:
+    except jwt.PyJWTError as e:
+        print("JWT ERROR:", type(e).__name__, str(e))
         return JSONResponse(
             status_code=401,
             content={"valid": False},
